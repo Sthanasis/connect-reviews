@@ -2,7 +2,6 @@ using connect.Reviews.Models;
 using connect.Reviews.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-var consumer = new TaskConsumer();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -23,6 +22,7 @@ builder.Services.Configure<AppDatabaseSettings>(
     builder.Configuration.GetSection("AppDatabase"));
 
 builder.Services.AddSingleton<ReviewService>();
+builder.Services.AddHostedService<TaskConsumer>();
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
 var app = builder.Build();
@@ -44,5 +44,4 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-consumer.StartListening();
 app.Run();
