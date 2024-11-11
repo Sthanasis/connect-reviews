@@ -2,6 +2,7 @@ using connect.Reviews.Models;
 using connect.Reviews.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var consumer = new TaskConsumer();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -43,4 +44,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+consumer.StartListening();
 app.Run();

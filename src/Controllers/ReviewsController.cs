@@ -7,12 +7,12 @@ namespace connect.Reviews.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ReviewsController : ControllerBase
+public class ReviewsController(ReviewService reviewService) : ControllerBase
 {
-    private readonly ReviewService _reviewService;
+    private readonly ReviewService _reviewService = reviewService;
+    private readonly TaskPublisher _publisher = new();
+
     private readonly AppErrorUtility _appErrorUtils = new();
-    public ReviewsController(ReviewService reviewService) =>
-        _reviewService = reviewService;
 
     [HttpGet("product/{id:length(24)}")]
     public async Task<ActionResult<AppResult<List<Review>>>> Get(string id)
@@ -50,6 +50,8 @@ public class ReviewsController : ControllerBase
         try
         {
             await _reviewService.CreateAsync(newReview);
+            _publisher.PublishMessage(newReview.Id!);
+            // _publisher.Close();
             return CreatedAtAction(nameof(Get), new { id = newReview.Id }, newReview);
         }
         catch (Exception ex)
