@@ -1,6 +1,5 @@
 using connect.Reviews.Models;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace connect.Reviews.Services;
@@ -8,7 +7,6 @@ namespace connect.Reviews.Services;
 public class ReviewService
 {
     private readonly IMongoCollection<Review> _reviewCollection;
-
     public ReviewService(
         IOptions<AppDatabaseSettings> appDatabaseSettings)
     {
@@ -30,8 +28,13 @@ public class ReviewService
     public async Task<Review?> GetAsync(string id) =>
         await _reviewCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-    public async Task CreateAsync(Review newReview) =>
+    public async Task CreateAsync(Review newReview)
+    {
         await _reviewCollection.InsertOneAsync(newReview);
+        TaskPublisher _publisher = new();
+        _publisher.PublishMessage(new ReviewMessageModel { ReviewId = newReview.Id!, ReviewScore = newReview.Score, ProductId = newReview.ProductId });
+        _publisher.Close();
+    }
 
 
     public async Task RemoveAsync(string id) =>

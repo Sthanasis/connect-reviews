@@ -10,7 +10,6 @@ namespace connect.Reviews.Controllers;
 public class ReviewsController(ReviewService reviewService) : ControllerBase
 {
     private readonly ReviewService _reviewService = reviewService;
-    private readonly TaskPublisher _publisher = new();
 
     private readonly AppErrorUtility _appErrorUtils = new();
 
@@ -50,8 +49,6 @@ public class ReviewsController(ReviewService reviewService) : ControllerBase
         try
         {
             await _reviewService.CreateAsync(newReview);
-            _publisher.PublishMessage(newReview.Id!);
-            // _publisher.Close();
             return CreatedAtAction(nameof(Get), new { id = newReview.Id }, newReview);
         }
         catch (Exception ex)

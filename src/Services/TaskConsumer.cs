@@ -1,5 +1,5 @@
-using System.Diagnostics;
 using System.Text;
+using System.Text.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -7,7 +7,7 @@ public sealed class TaskConsumer : BackgroundService
 {
     private IConnection? connection;
     private IModel? channel;
-    public void StartListening()
+    private void StartListeningForProductUpdated()
     {
         var factory = new ConnectionFactory() { HostName = "localhost", DispatchConsumersAsync = true };
         connection = factory.CreateConnection();
@@ -24,15 +24,15 @@ public sealed class TaskConsumer : BackgroundService
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
             await Task.CompletedTask;
-            Console.WriteLine(" [x] Received {0}", message);
+            Console.WriteLine(" [x] Received product_updated {0}", message);
         };
         channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
-        Console.WriteLine(" [x] Listenning for product_updated");
+        Console.WriteLine(" [x] Listening for product_updated");
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        StartListening();
+        StartListeningForProductUpdated();
         await Task.CompletedTask;
     }
 
