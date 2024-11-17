@@ -1,6 +1,6 @@
 using System.Text;
 using System.Text.Json;
-using connect.Reviews.Models;
+using connect_utilities.Models;
 using RabbitMQ.Client;
 
 namespace connect.Reviews.Services;
@@ -17,7 +17,7 @@ public class TaskPublisher
         _channel.ExchangeDeclare(exchange: "product_reviewed", type: ExchangeType.Fanout);
     }
 
-    public void PublishMessage(ReviewMessageModel message)
+    public void PublishMessage(ReviewMessage message)
     {
         var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
         _channel.BasicPublish(exchange: "product_reviewed", "", basicProperties: null, body: body);

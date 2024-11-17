@@ -1,4 +1,5 @@
 using connect.Reviews.Models;
+using connect_utilities.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -32,7 +33,7 @@ public class ReviewService
     {
         await _reviewCollection.InsertOneAsync(newReview);
         TaskPublisher _publisher = new();
-        _publisher.PublishMessage(new ReviewMessageModel { ReviewId = newReview.Id!, ReviewScore = newReview.Score, ProductId = newReview.ProductId });
+        _publisher.PublishMessage(new ReviewMessage { ReviewId = newReview.Id!, ReviewScore = newReview.Score, ProductId = newReview.ProductId });
         _publisher.Close();
     }
 

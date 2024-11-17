@@ -1,6 +1,7 @@
 using connect.Reviews.Models;
 using connect.Reviews.Services;
-using connect.Reviews.Utilities;
+using connect_utilities.Models;
+using connect_utilities.Utilities;
 
 using Microsoft.AspNetCore.Mvc;
 namespace connect.Reviews.Controllers;
