@@ -14,7 +14,7 @@ public class ReviewsController(ReviewService reviewService) : ControllerBase
 
     private readonly AppErrorUtility _appErrorUtils = new();
 
-    [HttpGet("product/{id:length(24)}")]
+    [HttpGet("products/{id:length(24)}")]
     public async Task<ActionResult<AppResult<List<Review>>>> Get(string id)
     {
         try
